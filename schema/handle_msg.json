@@ -3,35 +3,233 @@
   "title": "HandleMsg",
   "anyOf": [
     {
+      "description": "Start a game",
       "type": "object",
       "required": [
-        "increment"
+        "new_game"
       ],
       "properties": {
-        "increment": {
-          "type": "object"
+        "new_game": {
+          "type": "object",
+          "required": [
+            "name"
+          ],
+          "properties": {
+            "name": {
+              "type": "string"
+            }
+          }
         }
       }
     },
     {
+      "description": "Player joins the arena and sets a username and random password.",
       "type": "object",
       "required": [
-        "reset"
+        "join"
       ],
       "properties": {
-        "reset": {
+        "join": {
           "type": "object",
           "required": [
-            "count"
+            "game",
+            "password",
+            "pasture",
+            "username"
           ],
           "properties": {
-            "count": {
+            "game": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            },
+            "pasture": {
+              "$ref": "#/definitions/Pasture"
+            },
+            "username": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "Shoot at enemy pasture",
+      "type": "object",
+      "required": [
+        "shoot"
+      ],
+      "properties": {
+        "shoot": {
+          "description": "Coordinates",
+          "type": "object",
+          "required": [
+            "game",
+            "password",
+            "username",
+            "x",
+            "y"
+          ],
+          "properties": {
+            "game": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            },
+            "username": {
+              "type": "string"
+            },
+            "x": {
+              "description": "x-coordinate of northwest sheep",
               "type": "integer",
-              "format": "int32"
+              "format": "uint8",
+              "minimum": 0.0
+            },
+            "y": {
+              "description": "y-coordinate of northwest sheep",
+              "type": "integer",
+              "format": "uint8",
+              "minimum": 0.0
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "confirm the shot made by the previous player",
+      "type": "object",
+      "required": [
+        "confirm"
+      ],
+      "properties": {
+        "confirm": {
+          "description": "Coordinates",
+          "type": "object",
+          "required": [
+            "game",
+            "password",
+            "username",
+            "x",
+            "y"
+          ],
+          "properties": {
+            "game": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            },
+            "username": {
+              "type": "string"
+            },
+            "x": {
+              "description": "x-coordinate of northwest sheep",
+              "type": "integer",
+              "format": "uint8",
+              "minimum": 0.0
+            },
+            "y": {
+              "description": "y-coordinate of northwest sheep",
+              "type": "integer",
+              "format": "uint8",
+              "minimum": 0.0
             }
           }
         }
       }
     }
-  ]
+  ],
+  "definitions": {
+    "Coords": {
+      "description": "Coordinates",
+      "type": "object",
+      "required": [
+        "x",
+        "y"
+      ],
+      "properties": {
+        "x": {
+          "description": "x-coordinate of northwest sheep",
+          "type": "integer",
+          "format": "uint8",
+          "minimum": 0.0
+        },
+        "y": {
+          "description": "y-coordinate of northwest sheep",
+          "type": "integer",
+          "format": "uint8",
+          "minimum": 0.0
+        }
+      }
+    },
+    "Herd": {
+      "description": "A group of sheep\n\nThis represents a line of sheep following each other.",
+      "type": "object",
+      "required": [
+        "length",
+        "orientation",
+        "x",
+        "y"
+      ],
+      "properties": {
+        "length": {
+          "description": "Amount of sheep",
+          "type": "integer",
+          "format": "uint8",
+          "minimum": 0.0
+        },
+        "orientation": {
+          "description": "What way is the herd oriented",
+          "allOf": [
+            {
+              "$ref": "#/definitions/Orientation"
+            }
+          ]
+        },
+        "x": {
+          "description": "x-coordinate of northwest sheep",
+          "type": "integer",
+          "format": "uint8",
+          "minimum": 0.0
+        },
+        "y": {
+          "description": "y-coordinate of northwest sheep",
+          "type": "integer",
+          "format": "uint8",
+          "minimum": 0.0
+        }
+      }
+    },
+    "Orientation": {
+      "description": "Orientation of a herd",
+      "type": "string",
+      "enum": [
+        "horizontal",
+        "vertical"
+      ]
+    },
+    "Pasture": {
+      "type": "object",
+      "required": [
+        "herds",
+        "shots"
+      ],
+      "properties": {
+        "herds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Herd"
+          }
+        },
+        "shots": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Coords"
+          }
+        }
+      }
+    }
+  }
 }

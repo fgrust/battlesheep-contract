@@ -3,13 +3,86 @@
   "title": "QueryMsg",
   "anyOf": [
     {
+      "description": "Get a description of my pasture",
       "type": "object",
       "required": [
-        "get_count"
+        "my_pasture"
       ],
       "properties": {
-        "get_count": {
-          "type": "object"
+        "my_pasture": {
+          "type": "object",
+          "required": [
+            "game",
+            "password",
+            "username"
+          ],
+          "properties": {
+            "game": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            },
+            "username": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "Get the list of shots that I've made so far, and which ones have hit enemy sheep.",
+      "type": "object",
+      "required": [
+        "my_shots"
+      ],
+      "properties": {
+        "my_shots": {
+          "type": "object",
+          "required": [
+            "game",
+            "password",
+            "username"
+          ],
+          "properties": {
+            "game": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            },
+            "username": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    {
+      "description": "Get the coordinate of the last shot made by the opponent",
+      "type": "object",
+      "required": [
+        "last_shot"
+      ],
+      "properties": {
+        "last_shot": {
+          "type": "object",
+          "required": [
+            "game",
+            "password",
+            "username"
+          ],
+          "properties": {
+            "game": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            },
+            "username": {
+              "type": "string"
+            }
+          }
         }
       }
     }
