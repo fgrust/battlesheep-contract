@@ -1,3 +1,24 @@
+# Secret BattleSheep
+
+This project is an implementation of the classic [Battleship](https://en.wikipedia.org/wiki/Battleship_(game)) game
+as a secret contract, flavored as "Battle Sheep" just because I thought it'd be more fun :tada:
+
+At the moment this is only an implementation of the secret contract part, without a GUI.
+The secret contract tries to demonstrate solutions to several of the theoretical attacks described in
+[the encryption specs document.](https://github.com/enigmampc/SecretNetwork/blob/181db9b1a5f03b780a8f19b8961d526404fbfc46/docs/encryption-specs.md#theoretical-attacks)
+
+This includes:
+
+* Since in the current version of the testnet we can not verify the message sender, all queries and handles that
+  require authentication check for a user-defined secret, that other users can not forge, and the contract does not
+  expose.
+* In order to prevent offline attacks, where one of the players tries all the moves offline to see their effect
+  on the board, which would allow them to scan the entire board and discover all enemy sheep silently, each move
+  requires confirmation from the other player before its effect is processed. This is basically a way of achieving
+  relevant-scope-consensus about the moves on the board, preventing unauthorized disclosure of secrets.
+* Some of the storage patterns try to avoid side-channel attacks, although admittedly others don't.
+
+<!--
 # CosmWasm Starter Pack
 
 This is a template to build smart contracts in Rust to run inside a
@@ -82,3 +103,4 @@ that have been published.
 Please replace this README file with information about your specific project. You can keep
 the `Developing.md` and `Publishing.md` files as useful referenced, but please set some
 proper description in the README.
+-->
