@@ -316,7 +316,7 @@ impl Herd {
         let other_end = other.end();
 
         ranges_intersect(self.coords.x, self_end.x, other.coords.x, other_end.x)
-            || ranges_intersect(self.coords.y, self_end.y, other.coords.y, other_end.y)
+            && ranges_intersect(self.coords.y, self_end.y, other.coords.y, other_end.y)
     }
 
     /// location of last sheep
