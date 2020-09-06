@@ -221,6 +221,10 @@ fn expected_herd_count_of_length(length: u8) -> u32 {
 }
 
 impl Pasture {
+    pub fn new(herds: Vec<Herd>, shots: Vec<Coords>) -> Self {
+        Self { herds, shots }
+    }
+
     fn verify(&self) -> StdResult<()> {
         // Check that the amount of herds is correct
         // this is a mapping of herd length to count of herds with that length
@@ -280,7 +284,6 @@ impl Pasture {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct Herd {
     /// Coordinate of the north-west-most sheep
-    #[serde(flatten)]
     coords: Coords,
     /// Amount of sheep
     length: u8,

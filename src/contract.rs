@@ -158,71 +158,24 @@ pub fn try_get_last_shot<S: Storage>(storage: &S, credentials: Credentials) -> S
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use cosmwasm_std::testing::{mock_dependencies, mock_env};
-    use cosmwasm_std::{coins, from_binary, StdError};
+    use cosmwasm_std::{coins, from_binary, from_slice, to_vec, StdError};
+
+    use crate::state::{Herd, Orientation};
+
+    use super::*;
 
     #[test]
-    fn proper_initialization() {
-        let mut deps = mock_dependencies(20, &[]);
+    fn test_herd_serialize() {
+        let serialized =
+            "{\"orientation\": \"horizontal\", \"length\": 3, \"coords\": {\"x\": 2, \"y\": 4}}"
+                .as_bytes();
+        let herd: Herd = from_slice(&serialized).unwrap();
+        println!("{:?}", herd);
 
-        let msg = InitMsg { count: 17 };
-        let env = mock_env(&deps.api, "creator", &coins(1000, "earth"));
-
-        // we can just call .unwrap() to assert this was a success
-        let res = init(&mut deps, env, msg).unwrap();
-        assert_eq!(0, res.messages.len());
-
-        // it worked, let's query the state
-        let res = query(&deps, QueryMsg::GetCount {}).unwrap();
-        let value: CountResponse = from_binary(&res).unwrap();
-        assert_eq!(17, value.count);
-    }
-
-    #[test]
-    fn increment() {
-        let mut deps = mock_dependencies(20, &coins(2, "token"));
-
-        let msg = InitMsg { count: 17 };
-        let env = mock_env(&deps.api, "creator", &coins(2, "token"));
-        let _res = init(&mut deps, env, msg).unwrap();
-
-        // beneficiary can release it
-        let env = mock_env(&deps.api, "anyone", &coins(2, "token"));
-        let msg = HandleMsg::Increment {};
-        let _res = handle(&mut deps, env, msg).unwrap();
-
-        // should increase counter by 1
-        let res = query(&deps, QueryMsg::GetCount {}).unwrap();
-        let value: CountResponse = from_binary(&res).unwrap();
-        assert_eq!(18, value.count);
-    }
-
-    #[test]
-    fn reset() {
-        let mut deps = mock_dependencies(20, &coins(2, "token"));
-
-        let msg = InitMsg { count: 17 };
-        let env = mock_env(&deps.api, "creator", &coins(2, "token"));
-        let _res = init(&mut deps, env, msg).unwrap();
-
-        // beneficiary can release it
-        let unauth_env = mock_env(&deps.api, "anyone", &coins(2, "token"));
-        let msg = HandleMsg::Reset { count: 5 };
-        let res = handle(&mut deps, unauth_env, msg);
-        match res {
-            Err(StdError::Unauthorized { .. }) => {}
-            _ => panic!("Must return unauthorized error"),
-        }
-
-        // only the original creator can reset the counter
-        let auth_env = mock_env(&deps.api, "creator", &coins(2, "token"));
-        let msg = HandleMsg::Reset { count: 5 };
-        let _res = handle(&mut deps, auth_env, msg).unwrap();
-
-        // should now be 5
-        let res = query(&deps, QueryMsg::GetCount {}).unwrap();
-        let value: CountResponse = from_binary(&res).unwrap();
-        assert_eq!(5, value.count);
+        let herd = Herd::new(4, 6, 3, Orientation::Vertical);
+        let serialized = to_vec(&herd).unwrap();
+        let serialized = String::from_utf8_lossy(&serialized);
+        println!("{:?}", serialized);
     }
 }

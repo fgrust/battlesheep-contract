@@ -15,21 +15,16 @@ pub enum HandleMsg {
     /// Player joins the arena and sets a username and random password.
     Join {
         pasture: Pasture,
-        #[serde(flatten)]
         credentials: Credentials,
     },
     /// Shoot at enemy pasture
     Shoot {
-        #[serde(flatten)]
         coords: Coords,
-        #[serde(flatten)]
         credentials: Credentials,
     },
     /// confirm the shot made by the previous player
     Confirm {
-        #[serde(flatten)]
         coords: Coords,
-        #[serde(flatten)]
         credentials: Credentials,
     },
 }
@@ -38,20 +33,11 @@ pub enum HandleMsg {
 #[serde(rename_all = "snake_case")]
 pub enum QueryMsg {
     /// Get a description of my pasture
-    MyPasture {
-        #[serde(flatten)]
-        credentials: Credentials,
-    },
+    MyPasture { credentials: Credentials },
     /// Get the list of shots that I've made so far, and which ones have hit enemy sheep.
-    MyShots {
-        #[serde(flatten)]
-        credentials: Credentials,
-    },
+    MyShots { credentials: Credentials },
     /// Get the coordinate of the last shot made by the opponent
-    LastShot {
-        #[serde(flatten)]
-        credentials: Credentials,
-    },
+    LastShot { credentials: Credentials },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
