@@ -72,7 +72,7 @@ fn try_shoot<S: Storage>(
     let mut game = Game::load(storage, credentials.game.clone())?.full()?;
 
     if game.player().matches_credentials(&credentials) {
-        return Err(generic_err(format!("I'ts not your turn")));
+        return Err(generic_err("It's not your turn".to_string()));
     }
     game.shoot(coords);
 
@@ -89,9 +89,9 @@ fn try_confirm<S: Storage>(
     let mut game = Game::load(storage, credentials.game.clone())?.full()?;
 
     if game.opponent().matches_credentials(&credentials) {
-        return Err(generic_err(format!(
-            "You do not have permissions to confirm this shot"
-        )));
+        return Err(generic_err(
+            "You do not have permissions to confirm this shot".to_string(),
+        ));
     }
     game.confirm_shot(coords);
     game.end_turn();
@@ -118,7 +118,7 @@ fn try_get_my_pasture<S: Storage>(storage: &S, credentials: Credentials) -> StdR
     let pasture = game
         .player()
         .pasture(&credentials)
-        .ok_or_else(|| generic_err(format!("You do not have permissions to get the shots")))?;
+        .ok_or_else(|| generic_err("You do not have permissions to get the shots".to_string()))?;
 
     to_binary(pasture)
 }
@@ -132,9 +132,9 @@ pub fn try_get_my_shots<S: Storage>(storage: &S, credentials: Credentials) -> St
     } else if opponent.matches_credentials(&credentials) {
         game.get_opponent_shots();
     } else {
-        return Err(generic_err(format!(
-            "You do not have permissions to get this information"
-        )));
+        return Err(generic_err(
+            "You do not have permissions to get this information".to_string(),
+        ));
     };
 
     to_binary(&shots)
@@ -148,9 +148,9 @@ pub fn try_get_last_shot<S: Storage>(storage: &S, credentials: Credentials) -> S
         if player.matches_credentials(&credentials) || opponent.matches_credentials(&credentials) {
             game.next_shot();
         } else {
-            return Err(generic_err(format!(
-                "You do not have permissions to get this information"
-            )));
+            return Err(generic_err(
+                "You do not have permissions to get this information".to_string(),
+            ));
         };
 
     to_binary(&last_shot)

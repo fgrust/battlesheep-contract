@@ -60,7 +60,7 @@ impl FullGame {
         let pasture = &self.opponent().pasture;
         let all_shots: &[Coords] = &pasture.shots;
         let (hits, misses) = all_shots
-            .into_iter()
+            .iter()
             .partition(|shot| pasture.herds.iter().any(|herd| herd.is_at(**shot)));
 
         Shots { hits, misses }
@@ -70,7 +70,7 @@ impl FullGame {
         let pasture = &self.player().pasture;
         let all_shots: &[Coords] = &pasture.shots;
         let (hits, misses) = all_shots
-            .into_iter()
+            .iter()
             .partition(|shot| pasture.herds.iter().any(|herd| herd.is_at(**shot)));
 
         Shots { hits, misses }
@@ -114,7 +114,7 @@ impl Game {
 
     pub fn full(self) -> StdResult<FullGame> {
         if self.state.players.len() != 2 {
-            return Err(generic_err(format!("Not enough players in game!")));
+            return Err(generic_err("Not enough players in game!".to_string()));
         }
         Ok(FullGame { game: self })
     }
@@ -139,13 +139,11 @@ impl Game {
     }
 
     pub fn add_player(&mut self, player: Player) -> StdResult<()> {
-        if self.state.players.len() == 1 {
-            if self.state.players[0].username == player.username {
-                return Err(generic_err(format!(
-                    "username {} is already taken!",
-                    player.username
-                )));
-            }
+        if self.state.players.len() == 1 && self.state.players[0].username == player.username {
+            return Err(generic_err(format!(
+                "username {} is already taken!",
+                player.username
+            )));
         }
         if self.state.players.len() > 2 {
             return Err(generic_err(String::from("Game already full!")));
