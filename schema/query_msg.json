@@ -12,19 +12,11 @@
         "my_pasture": {
           "type": "object",
           "required": [
-            "game",
-            "password",
-            "username"
+            "credentials"
           ],
           "properties": {
-            "game": {
-              "type": "string"
-            },
-            "password": {
-              "type": "string"
-            },
-            "username": {
-              "type": "string"
+            "credentials": {
+              "$ref": "#/definitions/Credentials"
             }
           }
         }
@@ -40,19 +32,11 @@
         "my_shots": {
           "type": "object",
           "required": [
-            "game",
-            "password",
-            "username"
+            "credentials"
           ],
           "properties": {
-            "game": {
-              "type": "string"
-            },
-            "password": {
-              "type": "string"
-            },
-            "username": {
-              "type": "string"
+            "credentials": {
+              "$ref": "#/definitions/Credentials"
             }
           }
         }
@@ -68,23 +52,36 @@
         "last_shot": {
           "type": "object",
           "required": [
-            "game",
-            "password",
-            "username"
+            "credentials"
           ],
           "properties": {
-            "game": {
-              "type": "string"
-            },
-            "password": {
-              "type": "string"
-            },
-            "username": {
-              "type": "string"
+            "credentials": {
+              "$ref": "#/definitions/Credentials"
             }
           }
         }
       }
     }
-  ]
+  ],
+  "definitions": {
+    "Credentials": {
+      "type": "object",
+      "required": [
+        "game",
+        "password",
+        "username"
+      ],
+      "properties": {
+        "game": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        }
+      }
+    }
+  }
 }

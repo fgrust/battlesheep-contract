@@ -32,23 +32,15 @@
         "join": {
           "type": "object",
           "required": [
-            "game",
-            "password",
-            "pasture",
-            "username"
+            "credentials",
+            "pasture"
           ],
           "properties": {
-            "game": {
-              "type": "string"
-            },
-            "password": {
-              "type": "string"
+            "credentials": {
+              "$ref": "#/definitions/Credentials"
             },
             "pasture": {
               "$ref": "#/definitions/Pasture"
-            },
-            "username": {
-              "type": "string"
             }
           }
         }
@@ -62,36 +54,17 @@
       ],
       "properties": {
         "shoot": {
-          "description": "Coordinates",
           "type": "object",
           "required": [
-            "game",
-            "password",
-            "username",
-            "x",
-            "y"
+            "coords",
+            "credentials"
           ],
           "properties": {
-            "game": {
-              "type": "string"
+            "coords": {
+              "$ref": "#/definitions/Coords"
             },
-            "password": {
-              "type": "string"
-            },
-            "username": {
-              "type": "string"
-            },
-            "x": {
-              "description": "x-coordinate of northwest sheep",
-              "type": "integer",
-              "format": "uint8",
-              "minimum": 0.0
-            },
-            "y": {
-              "description": "y-coordinate of northwest sheep",
-              "type": "integer",
-              "format": "uint8",
-              "minimum": 0.0
+            "credentials": {
+              "$ref": "#/definitions/Credentials"
             }
           }
         }
@@ -105,36 +78,17 @@
       ],
       "properties": {
         "confirm": {
-          "description": "Coordinates",
           "type": "object",
           "required": [
-            "game",
-            "password",
-            "username",
-            "x",
-            "y"
+            "coords",
+            "credentials"
           ],
           "properties": {
-            "game": {
-              "type": "string"
+            "coords": {
+              "$ref": "#/definitions/Coords"
             },
-            "password": {
-              "type": "string"
-            },
-            "username": {
-              "type": "string"
-            },
-            "x": {
-              "description": "x-coordinate of northwest sheep",
-              "type": "integer",
-              "format": "uint8",
-              "minimum": 0.0
-            },
-            "y": {
-              "description": "y-coordinate of northwest sheep",
-              "type": "integer",
-              "format": "uint8",
-              "minimum": 0.0
+            "credentials": {
+              "$ref": "#/definitions/Credentials"
             }
           }
         }
@@ -164,16 +118,42 @@
         }
       }
     },
+    "Credentials": {
+      "type": "object",
+      "required": [
+        "game",
+        "password",
+        "username"
+      ],
+      "properties": {
+        "game": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        }
+      }
+    },
     "Herd": {
       "description": "A group of sheep\n\nThis represents a line of sheep following each other.",
       "type": "object",
       "required": [
+        "coords",
         "length",
-        "orientation",
-        "x",
-        "y"
+        "orientation"
       ],
       "properties": {
+        "coords": {
+          "description": "Coordinate of the north-west-most sheep",
+          "allOf": [
+            {
+              "$ref": "#/definitions/Coords"
+            }
+          ]
+        },
         "length": {
           "description": "Amount of sheep",
           "type": "integer",
@@ -187,18 +167,6 @@
               "$ref": "#/definitions/Orientation"
             }
           ]
-        },
-        "x": {
-          "description": "x-coordinate of northwest sheep",
-          "type": "integer",
-          "format": "uint8",
-          "minimum": 0.0
-        },
-        "y": {
-          "description": "y-coordinate of northwest sheep",
-          "type": "integer",
-          "format": "uint8",
-          "minimum": 0.0
         }
       }
     },
