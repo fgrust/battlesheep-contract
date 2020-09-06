@@ -1,3 +1,7 @@
+#![warn(clippy::pedantic)]
+#![allow(clippy::missing_errors_doc)]
+#![allow(clippy::needless_pass_by_value)]
+
 use cosmwasm_std::{
     generic_err, to_binary, Api, Binary, Env, Extern, HandleResponse, InitResponse, Querier,
     StdResult, Storage,
@@ -128,9 +132,9 @@ pub fn try_get_my_shots<S: Storage>(storage: &S, credentials: Credentials) -> St
     let player = game.player();
     let opponent = game.opponent();
     let shots = if player.matches_credentials(&credentials) {
-        game.get_player_shots();
+        game.get_player_shots()
     } else if opponent.matches_credentials(&credentials) {
-        game.get_opponent_shots();
+        game.get_opponent_shots()
     } else {
         return Err(generic_err(
             "You do not have permissions to get this information".to_string(),
@@ -146,7 +150,7 @@ pub fn try_get_last_shot<S: Storage>(storage: &S, credentials: Credentials) -> S
     let opponent = game.opponent();
     let last_shot =
         if player.matches_credentials(&credentials) || opponent.matches_credentials(&credentials) {
-            game.next_shot();
+            game.next_shot()
         } else {
             return Err(generic_err(
                 "You do not have permissions to get this information".to_string(),
