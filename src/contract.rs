@@ -122,6 +122,7 @@ fn try_get_my_pasture<S: Storage>(storage: &S, credentials: Credentials) -> StdR
     let pasture = game
         .player()
         .pasture(&credentials)
+        .or_else(|| game.opponent().pasture(&credentials))
         .ok_or_else(|| generic_err("You do not have permissions to get the shots".to_string()))?;
 
     to_binary(pasture)
