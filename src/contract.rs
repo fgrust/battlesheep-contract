@@ -3,7 +3,7 @@
 #![allow(clippy::needless_pass_by_value)]
 
 use cosmwasm_std::{
-    generic_err, to_binary, Api, Binary, Env, Extern, HandleResponse, InitResponse, Querier,
+    to_binary, Api, Binary, Env, Extern, HandleResponse, InitResponse, Querier, StdError,
     StdResult, Storage,
 };
 
@@ -43,7 +43,7 @@ pub fn handle<S: Storage, A: Api, Q: Querier>(
 fn try_new_game<S: Storage>(storage: &mut S, name: String) -> StdResult<HandleResponse> {
     // As long as the storage isn't corrupted somehow, this `?` should always succeed.
     if Game::may_load(storage, name.clone())?.is_some() {
-        return Err(generic_err(format!(
+        return Err(StdError::generic_err(format!(
             "game with name {:?} already exists",
             name
         )));
@@ -76,7 +76,7 @@ fn try_shoot<S: Storage>(
     let mut game = Game::load(storage, credentials.game.clone())?.full()?;
 
     if game.player().matches_credentials(&credentials) {
-        return Err(generic_err("It's not your turn".to_string()));
+        return Err(StdError::generic_err("It's not your turn".to_string()));
     }
     game.shoot(coords);
 
@@ -93,7 +93,7 @@ fn try_confirm<S: Storage>(
     let mut game = Game::load(storage, credentials.game.clone())?.full()?;
 
     if game.opponent().matches_credentials(&credentials) {
-        return Err(generic_err(
+        return Err(StdError::generic_err(
             "You do not have permissions to confirm this shot".to_string(),
         ));
     }
@@ -123,7 +123,9 @@ fn try_get_my_pasture<S: Storage>(storage: &S, credentials: Credentials) -> StdR
         .player()
         .pasture(&credentials)
         .or_else(|| game.opponent().pasture(&credentials))
-        .ok_or_else(|| generic_err("You do not have permissions to get the shots".to_string()))?;
+        .ok_or_else(|| {
+            StdError::generic_err("You do not have permissions to get the shots".to_string())
+        })?;
 
     to_binary(pasture)
 }
@@ -137,7 +139,7 @@ pub fn try_get_my_shots<S: Storage>(storage: &S, credentials: Credentials) -> St
     } else if opponent.matches_credentials(&credentials) {
         game.get_opponent_shots()
     } else {
-        return Err(generic_err(
+        return Err(StdError::generic_err(
             "You do not have permissions to get this information".to_string(),
         ));
     };
@@ -153,7 +155,7 @@ pub fn try_get_last_shot<S: Storage>(storage: &S, credentials: Credentials) -> S
         if player.matches_credentials(&credentials) || opponent.matches_credentials(&credentials) {
             game.next_shot()
         } else {
-            return Err(generic_err(
+            return Err(StdError::generic_err(
                 "You do not have permissions to get this information".to_string(),
             ));
         };

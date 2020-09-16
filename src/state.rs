@@ -3,7 +3,7 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use crate::msg::{Credentials, Shots};
-use cosmwasm_std::{generic_err, StdResult, Storage};
+use cosmwasm_std::{StdError, StdResult, Storage};
 use cosmwasm_storage::{prefixed, prefixed_read, singleton, singleton_read};
 use std::collections::HashMap;
 use std::ops::{AddAssign, Deref, DerefMut};
@@ -114,7 +114,9 @@ impl Game {
 
     pub fn full(self) -> StdResult<FullGame> {
         if self.state.players.len() != 2 {
-            return Err(generic_err("Not enough players in game!".to_string()));
+            return Err(StdError::generic_err(
+                "Not enough players in game!".to_string(),
+            ));
         }
         Ok(FullGame { game: self })
     }
@@ -128,7 +130,10 @@ impl Game {
         if let Some(state) = state {
             Ok(Self { name, state })
         } else {
-            Err(generic_err(format!("Game named {:?} doesn't exist", name)))
+            Err(StdError::generic_err(format!(
+                "Game named {:?} doesn't exist",
+                name
+            )))
         }
     }
 
@@ -140,13 +145,13 @@ impl Game {
 
     pub fn add_player(&mut self, player: Player) -> StdResult<()> {
         if self.state.players.len() == 1 && self.state.players[0].username == player.username {
-            return Err(generic_err(format!(
+            return Err(StdError::generic_err(format!(
                 "username {} is already taken!",
                 player.username
             )));
         }
         if self.state.players.len() > 2 {
-            return Err(generic_err(String::from("Game already full!")));
+            return Err(StdError::generic_err(String::from("Game already full!")));
         }
 
         player.pasture.verify()?;
@@ -239,13 +244,13 @@ impl Pasture {
         for (length, count) in herds.into_iter() {
             let expected_count = expected_herd_count_of_length(length);
             if expected_count > count {
-                return Err(generic_err(format!(
+                return Err(StdError::generic_err(format!(
                     "Too many herds of length {}. You should only have {} but you have {}",
                     length, expected_count, count
                 )));
             }
             if expected_count < count {
-                return Err(generic_err(format!(
+                return Err(StdError::generic_err(format!(
                     "You need {} herds of length {}. Found only {}",
                     count, length, expected_count
                 )));
@@ -259,7 +264,7 @@ impl Pasture {
                     continue;
                 }
                 if herd_1.intersects(herd_2) {
-                    return Err(generic_err(format!(
+                    return Err(StdError::generic_err(format!(
                         "Herd {} from {} to {} intersects with herd {} from {} to {}",
                         index_1,
                         herd_1.coords,
@@ -336,13 +341,14 @@ impl Herd {
 
     fn verify(&self) -> StdResult<()> {
         if self.length == 0 {
-            return Err(generic_err(
-                format!("Herd at {} has no sheep", self.coords,),
-            ));
+            return Err(StdError::generic_err(format!(
+                "Herd at {} has no sheep",
+                self.coords,
+            )));
         }
         let end = self.end();
         if end.x >= PASTURE_SIZE || end.y >= PASTURE_SIZE {
-            return Err(generic_err(format!(
+            return Err(StdError::generic_err(format!(
                 "Herd at {} isn't contained in the pasture",
                 self.coords,
             )));
